@@ -4,8 +4,9 @@ import sys
 
 from src import emulator
 
-# Добавляем директорию src в путь поиска модулей, чтобы импортировать функцию
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../src"))
+)
 
 from src.emulator import parse_and_expand
 

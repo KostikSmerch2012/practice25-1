@@ -7,10 +7,12 @@ import sys
 
 
 def parse_and_expand(user_input):
-    """Разбивает строку на команду и аргументы, а также заменяет $ПЕРЕМЕННЫЕ на их значения из ОС.
+    """Разбивает строку на команду и аргументы,
+    а также заменяет $ПЕРЕМЕННЫЕ на их значения из ОС.
 
     Если строка пустая, возвращает пустую команду и пустой список.
-    Для аргументов, начинающихся с $, отрезает знак доллара и ищет переменную в os.environ.
+    Для аргументов, начинающихся с $,
+    отрезает знак доллара и ищет переменную в os.environ.
     """
     parts = user_input.split()
     if len(parts) == 0:
@@ -27,44 +29,43 @@ def parse_and_expand(user_input):
     return command, args
 
 
-def run_repl():
-    """Запускает главный интерактивный цикл программы эмулятора (CLI-интерфейс).
+def handle_command(command, args):
+    """Обрабатывает введенную команду и возвращает True,
+    если нужно продолжить цикл, или False для выхода."""
 
-    Получает имя пользователя и хоста для вывода приглашения.
-    Проверяет команду exit на избыток аргументов и завершает работу.
-    Выводит информацию для заглушек ls и cd, проверяя cd на количество путей.
-    Выводит ошибку 'command not found' в sys.stderr для всех остальных команд.
-    Ловит Ctrl+C и Ctrl+D для корректного выхода из терминала.
-    """
+    if command == "exit":
+        if len(args) > 0:
+            print("exit: too many arguments", file=sys.stderr)
+            return True
+        print("logout")
+        return False
+
+    if command in ("ls", "cd"):
+        if command == "cd" and len(args) > 1:
+            print("cd: too many arguments", file=sys.stderr)
+        else:
+            print(f"[user] Вызвана команда {command}")
+            print(f"[user] Переданные аргументы {args}")
+        return True
+
+    print(f"system: {command}: command not found", file=sys.stderr)
+    return True
+
+
+def run_repl():
+    """Запускает главный интерактивный цикл программы (CLI-интерфейс)."""
     username = getpass.getuser()
     hostname = socket.gethostname()
 
     while True:
         try:
-            prompt = f"{username}@{hostname}:~$ "
-            user_input = input(prompt).strip()
-
-            if user_input == "":
+            user_input = input(f"{username}@{hostname}:~$ ").strip()
+            if not user_input:
                 continue
 
             command, args = parse_and_expand(user_input)
-
-            if command == "exit":
-                if len(args) > 0:
-                    print("exit: too many arguments", file=sys.stderr)
-                else:
-                    print("logout")
-                    break
-
-            elif command == "ls" or command == "cd":
-                if command == "cd" and len(args) > 1:
-                    print("cd: too many arguments", file=sys.stderr)
-                else:
-                    print(f"[user] Вызвана команда {command}")
-                    print(f"[user] Переданные аргументы {args}")
-
-            else:
-                print(f"bash: {command}: command not found", file=sys.stderr)
+            if not handle_command(command, args):
+                break
 
         except (KeyboardInterrupt, EOFError):
             print("\nlogout")
