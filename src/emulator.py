@@ -60,8 +60,8 @@ def run_repl():
                 if command == "cd" and len(args) > 1:
                     print("cd: too many arguments", file=sys.stderr)
                 else:
-                    print(f"[заглушка] Вызвана команда: {command}")
-                    print(f"[заглушка] Переданные аргументы: {args}")
+                    print(f"[user] Вызвана команда {command}")
+                    print(f"[user] Переданные аргументы {args}")
 
             else:
                 print(f"bash: {command}: command not found", file=sys.stderr)
