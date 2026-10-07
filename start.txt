@@ -1,0 +1,4 @@
+ls $USER
+invalid_command
+cd $HOME
+exit
