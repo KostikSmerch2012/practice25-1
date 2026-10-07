@@ -1,0 +1,18 @@
+{
+  "root": {
+    "type": "dir",
+    "children": {
+      "level1": {
+        "type": "dir",
+        "children": {
+          "level2": {
+            "type": "dir",
+            "children": {
+              "level3.txt": {"type": "file"}
+            }
+          }
+        }
+      }
+    }
+  }
+}
